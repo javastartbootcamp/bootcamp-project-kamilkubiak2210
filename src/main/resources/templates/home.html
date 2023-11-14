@@ -218,7 +218,7 @@
         <div class="container">
             <h2 id="szkolenia" class="mb-4">Planowane <span class="colorful-header">terminy</span></h2>
             <div class="table-responsive">
-                <table class="table">
+                <table th:if="${!trainings.isEmpty()}" class="table">
                     <thead>
                     <tr>
                         <th>Nazwa szkolenia</th>
@@ -253,6 +253,9 @@
 
                     </tbody>
                 </table>
+            </div>
+            <div th:if="${trainings.isEmpty()}" style="font-size: 19px" >Aktualnie nie prowadzimy żadnych szkoleń, zapraszamy do
+                <a href="#kontakt">kontaktu mailowego lub telefonicznego</a>
             </div>
         </div>
     </div>
