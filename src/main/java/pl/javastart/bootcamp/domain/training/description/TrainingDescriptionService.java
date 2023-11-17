@@ -1,6 +1,9 @@
 package pl.javastart.bootcamp.domain.training.description;
 
 import org.springframework.stereotype.Service;
+import pl.javastart.bootcamp.config.notfound.ResourceNotFoundException;
+import pl.javastart.bootcamp.domain.training.Training;
+import pl.javastart.bootcamp.domain.training.TrainingRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,9 +12,11 @@ import java.util.Optional;
 public class TrainingDescriptionService {
 
     private TrainingDescriptionRepository trainingDescriptionRepository;
+    private TrainingRepository trainingRepository;
 
-    public TrainingDescriptionService(TrainingDescriptionRepository trainingDescriptionRepository) {
+    public TrainingDescriptionService(TrainingDescriptionRepository trainingDescriptionRepository, TrainingRepository trainingRepository) {
         this.trainingDescriptionRepository = trainingDescriptionRepository;
+        this.trainingRepository = trainingRepository;
     }
 
     public Optional<TrainingDescription> findByUrl(String url) {
@@ -38,5 +43,20 @@ public class TrainingDescriptionService {
             throw new IllegalArgumentException("ID should be not be null when updating");
         }
         return trainingDescriptionRepository.save(trainingDescription);
+    }
+
+    public boolean deleteTrainingDescription(Long id) {
+        Optional<TrainingDescription> trainingDescription = findById(id);
+        if (trainingDescription.isPresent()) {
+            List<Training> trainings = trainingRepository.findAllByDescriptionId(trainingDescription.get().getId());
+            if (trainings.isEmpty()) {
+                trainingDescriptionRepository.delete(trainingDescription.get());
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            throw new ResourceNotFoundException();
+        }
     }
 }

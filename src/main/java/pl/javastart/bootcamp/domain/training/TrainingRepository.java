@@ -9,4 +9,6 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
     List<Training> findByStatusAndCategory(TrainingStatus status, TrainingCategory category);
 
     List<Training> findByStatusAndDescription_Url(TrainingStatus status, String trainingDescriptionUrl);
+
+    List<Training> findAllByDescriptionId(Long id);
 }

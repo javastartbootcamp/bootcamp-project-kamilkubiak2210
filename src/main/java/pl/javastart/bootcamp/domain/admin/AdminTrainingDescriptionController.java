@@ -2,10 +2,7 @@ package pl.javastart.bootcamp.domain.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import pl.javastart.bootcamp.config.notfound.ResourceNotFoundException;
 import pl.javastart.bootcamp.domain.training.description.TrainingDescription;
 import pl.javastart.bootcamp.domain.training.description.TrainingDescriptionService;
@@ -57,5 +54,14 @@ public class AdminTrainingDescriptionController {
         return "redirect:/admin/opisy";
     }
 
-
+    @PostMapping("/usuń")
+    public String deleteDescription(@RequestParam(value = "id") Long id, Model model) {
+        boolean isDeleted = trainingDescriptionService.deleteTrainingDescription(id);
+        if (isDeleted) {
+            return "redirect:/admin/opisy";
+        } else {
+            model.addAttribute("message", "Nie można usunąć opisu, ponieważ używa go szkolenie.");
+            return "error/error";
+        }
+    }
 }

@@ -43,7 +43,11 @@
 
 
     </form>
-
+    <h4 class="mb-4">Usuń opis szkolenia</h4>
+    <form th:method="POST" th:action="@{/admin/opisy/usuń}">
+        <input type="hidden" th:field="${description.id}" name="id"/>
+        <button type="submit">Usuń</button>
+    </form>
 
 </div>
 
