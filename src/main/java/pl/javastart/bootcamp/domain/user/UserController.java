@@ -86,24 +86,24 @@ public class UserController {
     }
 
     @PostMapping("/konto/zmiana-hasla")
-    public String changePassword(@RequestParam String newPassword,
+    public String changePassword(@RequestParam String currentPassword,
+                                 @RequestParam String newPassword,
                                  @RequestParam String newPassword2,
                                  Principal principal, Model model) {
-
         if (newPassword.length() < 8) {
             model.addAttribute("message", "Hasło powinno mieć co najmniej 8 znaków.");
             return "account/changePassword";
         }
-
-        if (newPassword.equals(newPassword2)) {
-            try {
+        boolean passwordCorrect = userService.checkPassword(principal, currentPassword);
+        if (passwordCorrect) {
+            if (newPassword.equals(newPassword2)) {
                 userService.changePassword(principal.getName(), newPassword);
-            } catch (InvalidPasswordException e) {
-                model.addAttribute("message", "Podałeś niepoprawne aktualne hasło");
+            } else {
+                model.addAttribute("message", "Wpisane różnią się od siebie");
                 return "account/changePassword";
             }
         } else {
-            model.addAttribute("message", "Wpisane różnią się od siebie");
+            model.addAttribute("message", "Podałeś niepoprawne aktualne hasło");
             return "account/changePassword";
         }
 
