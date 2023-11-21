@@ -113,4 +113,15 @@ public class AdminLessonController {
         lessonService.copyLessonFromTemplate(dto);
         return "redirect:/admin/szkolenia/" + dto.getTrainingId() + "/lekcje";
     }
+
+    @PostMapping("/admin/lekcje/usuń")
+    public String deleteLesson(@RequestParam(value = "lessonId") Long lessonId, @RequestParam(value = "trainingId") Long trainingId, Model model) {
+        boolean isDeleted = lessonService.deleteLesson(lessonId);
+        if (isDeleted) {
+            return "redirect:/admin/szkolenia/" + trainingId + "/lekcje";
+        } else {
+            model.addAttribute("message", "Nie można usunąć, ponieważ zadanie jest rozpoczęte przez któregoś z użytkowników");
+            return "error/error";
+        }
+    }
 }
