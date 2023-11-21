@@ -69,7 +69,7 @@ body {
 
 @media (min-width: 758px) {
     .home-header {
-        background-image: url('/img/sala2.jpg');
+        background-image: url('https://bootcamp.javastart.pl/img/computer.webp');
         background-repeat: no-repeat;
         background-size: cover;
         background-position-y: center;
