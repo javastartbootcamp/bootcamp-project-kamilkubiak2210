@@ -196,6 +196,33 @@
             <column name="base_repository_url" value="http://git.javastart.pl/zadania-automat/oop_movie_fail" />
         </insert>
 
+        <insert tableName="task">
+            <column name="id" value="5"/>
+            <column name="name" value="Poznaj Git"/>
+            <column name="sort_order" value="370"/>
+            <column name="tags" value="java"/>
+            <column name="content" value="W tej lekcji dowiesz się jak pracuje się z Git'em"/>
+            <column name="points" value="1"/>
+        </insert>
+
+        <insert tableName="task">
+            <column name="id" value="6"/>
+            <column name="name" value="Dane klienta"/>
+            <column name="sort_order" value="380"/>
+            <column name="tags" value="java"/>
+            <column name="content" value="Popraw aplikacje tak, żeby dane klienta były zakodowane zgodnie z przepisami RODO"/>
+            <column name="points" value="1"/>
+        </insert>
+
+        <insert tableName="task">
+            <column name="id" value="7"/>
+            <column name="name" value="Naprawa"/>
+            <column name="sort_order" value="390"/>
+            <column name="tags" value="java"/>
+            <column name="content" value="To zadanie jest nieobowiązkowe"/>
+            <column name="points" value="1"/>
+        </insert>
+
         <loadData file="db/testdata/task/task.csv"
                   separator=";"
                   tableName="task"/>
@@ -231,6 +258,33 @@
             <column name="number" value="1"/>
             <column name="is_mandatory" valueBoolean="true"/>
             <column name="deadline" valueDate="2020-10-11 23:59:00"/>
+        </insert>
+
+        <insert tableName="lesson_task">
+            <column name="id" value="4"/>
+            <column name="lesson_id" value="8"/>
+            <column name="task_id" value="5"/>
+            <column name="number" value="1"/>
+            <column name="is_mandatory" valueBoolean="true"/>
+            <column name="deadline" valueDate="2023-11-25 23:59:00"/>
+        </insert>
+
+        <insert tableName="lesson_task">
+            <column name="id" value="5"/>
+            <column name="lesson_id" value="9"/>
+            <column name="task_id" value="6"/>
+            <column name="number" value="1"/>
+            <column name="is_mandatory" valueBoolean="true"/>
+            <column name="deadline" valueDate="2023-11-27 23:59:00"/>
+        </insert>
+
+        <insert tableName="lesson_task">
+            <column name="id" value="6"/>
+            <column name="lesson_id" value="10"/>
+            <column name="task_id" value="7"/>
+            <column name="number" value="1"/>
+            <column name="is_mandatory" valueBoolean="false"/>
+            <column name="deadline" valueDate="2023-12-11 23:59:00"/>
         </insert>
 
         <loadData file="db/testdata/user_task.csv"
