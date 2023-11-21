@@ -22,15 +22,13 @@ import pl.javastart.bootcamp.domain.training.lesson.lessontask.LessonTaskService
 import pl.javastart.bootcamp.domain.user.User;
 import pl.javastart.bootcamp.domain.user.training.lesson.LessonWithPointsDto;
 import pl.javastart.bootcamp.domain.user.training.lesson.task.usersolution.UserTask;
+import pl.javastart.bootcamp.domain.user.training.lesson.task.usersolution.UserTaskRepository;
 import pl.javastart.bootcamp.utils.BigDecimalFormatter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +44,7 @@ public class LessonService {
     private final LessonExerciseRepository lessonExerciseRepository;
     private final LessonTaskRepository lessonTaskRepository;
     private final SignupService signupService;
+    private final UserTaskRepository userTaskRepository;
 
     public LessonService(LessonRepository lessonRepository,
                          LessonTaskService lessonTaskService,
@@ -56,7 +55,8 @@ public class LessonService {
                          TrainingTemplateLessonRepository trainingTemplateLessonRepository,
                          LessonExerciseRepository lessonExerciseRepository,
                          LessonTaskRepository lessonTaskRepository,
-                         SignupService signupService) {
+                         SignupService signupService,
+                         UserTaskRepository userTaskRepository) {
         this.lessonRepository = lessonRepository;
         this.lessonTaskService = lessonTaskService;
         this.bigDecimalFormatter = bigDecimalFormatter;
@@ -67,6 +67,7 @@ public class LessonService {
         this.lessonExerciseRepository = lessonExerciseRepository;
         this.lessonTaskRepository = lessonTaskRepository;
         this.signupService = signupService;
+        this.userTaskRepository = userTaskRepository;
     }
 
     public Lesson findByIdOrThrow(Long id) {
@@ -79,7 +80,7 @@ public class LessonService {
         List<Lesson> lessons = lessonRepository.findByTrainingIdOrderByNumber(trainingId);
         return lessons.stream()
                 .filter(Lesson::isVisible)
-                .filter(l -> signup.getLessonTo() == null || l.getNumber() <= signup.getLessonTo() )
+                .filter(l -> signup.getLessonTo() == null || l.getNumber() <= signup.getLessonTo())
                 .map(lesson -> toDto(lesson, lessonTaskService.getTaskListMap(user)))
                 .collect(Collectors.toList());
     }
@@ -251,5 +252,29 @@ public class LessonService {
     private LocalDateTime calculateDeadline(Lesson targetLesson, LessonTask taskToCopy) {
         LocalDate deadlineDate = targetLesson.getLessonDate().plusDays(taskToCopy.getDeadlineDays());
         return LocalDateTime.of(deadlineDate, taskToCopy.getDeadlineHour());
+    }
+
+    public boolean deleteLesson(Long id) {
+        Optional<Lesson> lessonOptional = lessonRepository.findById(id);
+        if (lessonOptional.isPresent()) {
+            List<LessonTask> lessonTasks = lessonTaskRepository.findAllByLessonId(lessonOptional.get().getId());
+            if (lessonTasks.isEmpty()) {
+                lessonRepository.delete(lessonOptional.get());
+                return true;
+            }
+            List<UserTask> userTasks = new ArrayList<>();
+            for (LessonTask lessonTask : lessonTasks) {
+                List<UserTask> userTasks2 = userTaskRepository.findAllByLessonTaskIdAndStartedAtIsNotNull(lessonTask.getId());
+                if (!userTasks2.isEmpty()) {
+                    userTasks.addAll(userTasks2);
+                }
+            }
+            if (!lessonTasks.isEmpty() && userTasks.isEmpty()) {
+                lessonTaskRepository.deleteAll(lessonTasks);
+                lessonRepository.delete(lessonOptional.get());
+                return true;
+            }
+        }
+        return false;
     }
 }

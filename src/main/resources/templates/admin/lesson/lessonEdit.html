@@ -76,7 +76,13 @@
             <span>Dodaj</span>
         </button>
     </form>
-
+    <br/>
+    <h4 class="mb-4">Usuń lekcje</h4>
+    <form th:method="POST" th:action="@{/admin/lekcje/usuń}">
+        <input type="hidden" th:value="${lesson.id}" name="lessonId"/>
+        <input type="hidden" th:value="${lesson.training.id}" name="trainingId"/>
+        <button type="submit">Usuń</button>
+    </form>
     <div th:replace="~{fragments/scripts :: selectable-row}"></div>
     <div th:replace="~{fragments/scripts :: filtering}"></div>
 

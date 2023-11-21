@@ -16,4 +16,6 @@ public interface UserTaskRepository extends JpaRepository<UserTask, Long> {
     Optional<UserTask> findByLessonTaskIdAndUserId(Long lessonTaskId, Long userId);
 
     List<UserTask> findByToBeChecked(boolean toBeChecked);
+
+    List<UserTask> findAllByLessonTaskIdAndStartedAtIsNotNull(Long id);
 }
